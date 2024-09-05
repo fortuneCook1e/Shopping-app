@@ -1,0 +1,25 @@
+# Node.js and npm
+node_modules/
+npm-debug.log
+
+# Build artifacts
+dist/
+build/
+
+# Editors and IDEs
+.idea/
+.vscode/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+
+# Secrets and API keys
+.env
+config.json
+
+# Ignore package-lock.json
+package-lock.json
