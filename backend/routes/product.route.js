@@ -1,69 +1,27 @@
+/*
+Routes define the endpoints (URLs) of your application and 
+specify the HTTP methods (GET, POST, PUT, DELETE, etc.) 
+that can be used to access those endpoints. 
+In Express.js, routes are defined using the app.get(), app.post(), 
+app.put(), and app.delete() methods. Routes are typically organized 
+into separate files and imported into your main server file (server.js).
+*/
+
 import express from 'express';
-import Product from '../models/product.model.js';
-import mongoose from 'mongoose';
+import { createProduct, deleteProduct, getProducts, updateProduct } from '../controller/product.controller.js';
 
 const router = express.Router();
 
 // receive request from user and create new product in database
-router.post('/', async (req, res) => {
-    const product = req.body; // user will send this data
-
-    if (!product.name || !product.price || !product.image){
-        return res.status(400).json({ success:false, message: 'All fields are required.' });
-    }
-
-    const newProduct = new Product(product);
-    try {
-        await newProduct.save();
-        res.status(201).json({ success: true, message: 'Product created successfully.', data: newProduct });
-    } catch (error) {
-        console.error("Error creating product: " + error.message);
-        res.status(500).json({ success: false, message: 'Server Error.' });
-    }
-});
+router.post('/', createProduct);
 
 // delete product from database
-router.delete('/:id', async (req, res) => {
-    const {id} = req.params; // get the id of the product to be deleted
-    console.log("id:" + id); //show the id
-
-    try {
-        await Product.findByIdAndDelete(id);
-        res.status(200).json({ success: true, message: "product is deleted successfully"});
-    } catch (error) {
-        console.error("Error deleting product: " + error.message); // show on server log
-        res.status(404).json({ success: false, message: 'Product not found.' }); // show on client side
-    }
-});
+router.delete('/:id', deleteProduct);
 
 // get all products from database
-router.get('/', async (req, res) => {
-    try {
-        const products = await Product.find({});
-        res.status(200).json({success: true, data: products});
-    } catch (error) {
-        console.error("Error retrieving products: " + error.message);
-        res.status(500).json({ success: false, message: 'Server Error.' });
-    }
-});
+router.get('/', getProducts);
 
 // update product in database
-router.put('/:id', async (req, res) => {
-    const {id} = req.params;
-    const product = req.body;
-
-    // handle product not found
-    if (!mongoose.Types.ObjectId.isValid(id)){
-        return res.status(404).json({ success: false, message: 'Product not found.' });
-    }
-
-    try {
-        const updatedProduct = await Product.findByIdAndUpdate(id, product, {new: true});
-        res.status(200).json({ success: true, message: 'Product updated successfully.', data: updatedProduct });
-    } catch (error) {
-        console.error("Error updating product: " + error.message);
-        res.status(500).json({ success: false, message: 'Server Error.' });
-    }
-});
+router.put('/:id', updateProduct);
 
 export default router;
