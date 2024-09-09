@@ -33,8 +33,24 @@ export const useProductStore = create((set) => ({
         if(!data.success){
             return {success:false, message:data.message}
         }
+        // update the UI immediatelly without needing to refresh
         set((state) => ({products: state.products.filter((product) => product._id!== productId)}));
         return {success: true, message: data.message};
-        
+    },
+    updateProduct: async (productId, updatedProduct) => {
+        const res = await fetch(`/api/products/${productId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedProduct)
+        });
+        const data = await res.json(); 
+        if(!data.success){
+            return {success:false, message:data.message}
+        }
+        // update UI immediately without needing refresh
+        set((state) => ({products: state.products.map((product) => product._id === productId? updatedProduct : product)}));
+        return {success: true, message: data.message};
     }
 }));
