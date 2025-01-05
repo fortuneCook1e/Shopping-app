@@ -13,7 +13,7 @@ import { createProduct, deleteProduct, getProducts, updateProduct } from '../con
 const router = express.Router();
 
 // receive request from user and create new product in database
-router.post('/', createProduct);
+router.post('/', createProduct); // if endpoint is '/' then create new product
 
 // delete product from database
 router.delete('/:id', deleteProduct);
